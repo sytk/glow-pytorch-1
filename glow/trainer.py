@@ -11,6 +11,8 @@ from .utils import save, load, plot_prob
 from .config import JsonConfig
 from .models import Glow
 from . import thops
+import cv2
+from PIL import Image
 
 
 class Trainer(object):
@@ -49,10 +51,10 @@ class Trainer(object):
         self.batch_size = hparams.Train.batch_size
         self.data_loader = DataLoader(dataset,
                                       batch_size=self.batch_size,
-                                    #   num_workers=8,
+                                      #   num_workers=8,
                                       shuffle=True,
                                       drop_last=True)
-        self.n_epoches = (hparams.Train.num_batches+len(self.data_loader)-1)
+        self.n_epoches = (hparams.Train.num_batches + len(self.data_loader) - 1)
         self.n_epoches = self.n_epoches // len(self.data_loader)
         self.global_step = 0
         # lr schedule
@@ -148,29 +150,18 @@ class Trainer(object):
                          optim=self.optim,
                          pkg_dir=self.checkpoints_dir,
                          is_best=True,
-                         max_checkpoints=self.max_checkpoints)
-                if self.global_step % self.plot_gaps == 0:
-                    img = self.graph(z=z, y_onehot=y_onehot, reverse=True)
-                    # img = torch.clamp(img, min=0, max=1.0)
-                    if self.y_condition:
-                        if self.y_criterion == "multi-classes":
-                            y_pred = torch.sigmoid(y_logits)
-                        elif self.y_criterion == "single-class":
-                            y_pred = thops.onehot(torch.argmax(F.softmax(y_logits, dim=1), dim=1, keepdim=True),
-                                                  self.y_classes)
-                        y_true = y_onehot
-                    for bi in range(min([len(img), 4])):
-                        self.writer.add_image("0_reverse/{}".format(bi), torch.cat((img[bi], batch["x"][bi]), dim=1), self.global_step)
-                        if self.y_condition:
-                            self.writer.add_image("1_prob/{}".format(bi), plot_prob([y_pred[bi], y_true[bi]], ["pred", "true"]), self.global_step)
+                         max_checkpoints=self.max_checkpoints)\
 
-                # inference
-                if hasattr(self, "inference_gap"):
-                    if self.global_step % self.inference_gap == 0:
-                        img = self.graph(z=None, y_onehot=y_onehot, eps_std=0.5, reverse=True)
-                        # img = torch.clamp(img, min=0, max=1.0)
-                        for bi in range(min([len(img), 4])):
-                            self.writer.add_image("2_sample/{}".format(bi), img[bi], self.global_step)
+                if self.global_step % self.plot_gaps == 0:
+                    img = self.graph(z=None, y_onehot=y_onehot, reverse=True)
+                    x = img.to('cpu').detach().numpy().copy()
+                    for i in range(4):
+                        n = np.random.randint(0, self.batch_size)
+                        image = x[n][0]
+                        image[np.where(image < 0.6)] = 0
+                        image[np.where(image >= 0.6)] = 255
+                        pilImg = Image.fromarray(np.uint8(image))
+                        pilImg.save(self.log_dir + '/%d_%d.png' % (self.global_step, i))
 
                 # global step
                 self.global_step += 1

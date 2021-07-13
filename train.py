@@ -26,13 +26,17 @@ if __name__ == "__main__":
     hparams = JsonConfig(hparams)
     dataset = vision.Datasets[dataset]
     # set transform of dataset
-    transform = transforms.Compose([
-        transforms.CenterCrop(hparams.Data.center_crop),
-        transforms.Resize(hparams.Data.resize),
-        transforms.ToTensor()])
+
+    # transform = transforms.Compose([
+    #     transforms.CenterCrop(hparams.Data.center_crop),
+    #     transforms.Resize(hparams.Data.resize),
+    #     transforms.ToTensor()])
+
     # build graph and dataset
     built = build(hparams, True)
-    dataset = dataset(dataset_root, transform=transform)
+    # dataset = dataset(dataset_root, transform=transform)
+
+    dataset = dataset(dataset_root)
     # begin to train
     trainer = Trainer(**built, dataset=dataset, hparams=hparams)
     trainer.train()

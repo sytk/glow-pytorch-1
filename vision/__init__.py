@@ -1,5 +1,7 @@
 from .datasets import CelebADataset
+from .datasets import QuickDrawFaceDataset
 
 Datasets = {
-    "celeba": CelebADataset
+    "celeba": CelebADataset,
+    "face": QuickDrawFaceDataset
 }

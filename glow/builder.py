@@ -1,4 +1,5 @@
-import re, os
+import re
+import os
 import copy
 import torch
 from collections import defaultdict
@@ -67,9 +68,9 @@ def build(hparams, is_training):
             pre_trained = hparams.Infer.pre_trained
         if pre_trained is not None:
             loaded_step = load(os.path.basename(pre_trained),
-                        graph=graph, optim=optim, criterion_dict=None,
-                        pkg_dir=os.path.dirname(pre_trained),
-                        device=cpu)
+                               graph=graph, optim=optim, criterion_dict=None,
+                               pkg_dir=os.path.dirname(pre_trained),
+                               device=cpu)
         # 2. move graph to device (to cpu or cuda)
         use_cpu = any([isinstance(d, str) and d.find("cpu") >= 0 for d in devices])
         if use_cpu:
