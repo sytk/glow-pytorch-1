@@ -4,8 +4,8 @@
     },
     "Glow" : {
         "image_shape": [32, 32, 1],
-        "hidden_channels": 64,
-        "K": 16,
+        "hidden_channels": 32,
+        "K": 12,
         "L": 3,
         "actnorm_scale": 1.0,
         "flow_permutation": "invconv",
@@ -42,7 +42,7 @@
         "data": "cuda:0"
     },
     "Train": {
-        "batch_size": 128,
+        "batch_size": 512,
         "num_batches": 10000,
         "max_grad_clip": 5,
         "max_grad_norm": 100,
@@ -52,7 +52,7 @@
         "scalar_log_gap": 50,
         "plot_gap": 50,
         "inference_gap": 50,
-        "warm_start": "./results/face/log_20210610_0012/checkpoints/save_10k0.pkg",
+        "warm_start": "",
         "weight_y": 0.5
     },
     "Infer": {

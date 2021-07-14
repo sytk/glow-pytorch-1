@@ -258,7 +258,7 @@ class Glow(nn.Module):
         self.eval()
         B = self.hparams.Train.batch_size
         x = img.unsqueeze(0).repeat(B, 1, 1, 1).cuda()
-        z,_, _ = self(x)
+        z, _, _ = self(x)
         self.train()
         return z[0].detach().cpu().numpy()
 

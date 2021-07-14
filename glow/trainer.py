@@ -157,9 +157,9 @@ class Trainer(object):
                     x = img.to('cpu').detach().numpy().copy()
                     for i in range(4):
                         n = np.random.randint(0, self.batch_size)
-                        image = x[n][0]
-                        image[np.where(image < 0.6)] = 0
-                        image[np.where(image >= 0.6)] = 255
+                        image = x[n][0] * 255
+                        # image[np.where(image < 0.6)] = 0
+                        # image[np.where(image >= 0.6)] = 255
                         pilImg = Image.fromarray(np.uint8(image))
                         pilImg.save(self.log_dir + '/%d_%d.png' % (self.global_step, i))
 

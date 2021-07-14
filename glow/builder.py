@@ -3,7 +3,7 @@ import os
 import copy
 import torch
 from collections import defaultdict
-from . import learning_rate_schedule
+from .import learning_rate_schedule
 from .config import JsonConfig
 from .models import Glow
 from .utils import load, save, get_proper_device

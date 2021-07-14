@@ -9,6 +9,7 @@ from torchvision import transforms
 IMAGE_EXTENSTOINS = [".png", ".jpg", ".jpeg", ".bmp"]
 ATTR_ANNO = "list_attr_celeba.txt"
 
+
 def _is_image(fname):
     _, ext = os.path.splitext(fname)
     return ext.lower() in IMAGE_EXTENSTOINS
@@ -57,9 +58,9 @@ def _find_images_and_annotation(root_dir):
 
 class CelebADataset(Dataset):
     def __init__(self, root_dir, transform=transforms.Compose([
-                                           transforms.CenterCrop(160),
-                                           transforms.Resize(32),
-                                           transforms.ToTensor()])):
+            transforms.CenterCrop(160),
+            transforms.Resize(32),
+            transforms.ToTensor()])):
         super().__init__()
         dicts, attrs = _find_images_and_annotation(root_dir)
         self.data = dicts
@@ -70,7 +71,7 @@ class CelebADataset(Dataset):
         data = self.data[index]
         path = data["path"]
         attr = data["attr"]
-        image= Image.open(path).convert("RGB")
+        image = Image.open(path).convert("RGB")
         if self.transform is not None:
             image = self.transform(image)
         return {

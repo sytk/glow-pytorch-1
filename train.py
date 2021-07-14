@@ -10,7 +10,7 @@ from torchvision import transforms
 from glow.builder import build
 from glow.trainer import Trainer
 from glow.config import JsonConfig
-
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 if __name__ == "__main__":
     args = docopt(__doc__)
@@ -25,18 +25,20 @@ if __name__ == "__main__":
         "Failed to find hparams josn `{}`".format(hparams))
     hparams = JsonConfig(hparams)
     dataset = vision.Datasets[dataset]
-    # set transform of dataset
 
-    # transform = transforms.Compose([
-    #     transforms.CenterCrop(hparams.Data.center_crop),
-    #     transforms.Resize(hparams.Data.resize),
-    #     transforms.ToTensor()])
+    # set transform of dataset
+    transform = transforms.Compose([
+        transforms.CenterCrop(hparams.Data.center_crop),
+        transforms.Resize(hparams.Data.resize),
+        transforms.ToTensor()])
 
     # build graph and dataset
     built = build(hparams, True)
-    # dataset = dataset(dataset_root, transform=transform)
 
+    # dataset = dataset(dataset_root, transform=transform)
     dataset = dataset(dataset_root)
+
     # begin to train
     trainer = Trainer(**built, dataset=dataset, hparams=hparams)
     trainer.train()
+# gsutil -m cp -r "gs://quickdraw_dataset/full/numpy_bitmap/" ./
